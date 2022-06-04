@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -24,10 +23,7 @@ public class Main {
         String[] linesAsArrayWithSpace = lines.toArray(new String[lines.size()]);
 
         var vartexCount = Integer.parseInt(linesAsArrayWithSpace[0]);
-
-
         int start = Integer.parseInt(linesAsArrayWithSpace[vartexCount+1]) - 1;
-        int v = Integer.parseInt(linesAsArrayWithSpace[vartexCount+1]) - 1;
         int end = Integer.parseInt(linesAsArrayWithSpace[vartexCount+2]) - 1;
 
         int[][] matrix = new int[vartexCount][vartexCount];
@@ -42,47 +38,22 @@ public class Main {
                 //System.out.println(matrix[i-1][j]);
             }
         }
-
         var m = new int[vartexCount];
         var s = new HashSet<Integer>();
-        s.add(v);
-        t[v] = 1;
-        while (v!= -1){
-            for (int j:getIncidentVertices(v, matrix)) {
-                if(s.contains(j) == false){
-                    var w = t[v] * matrix[v][j];
-                    if( w < t[j]){
-                        t[j] = w;
-                        m[j] = v;
-                    }
-                }
-            }
-            v = argMin(t, s);
-            if (v >= 0){
-                s.add(v);
-            }
-        }
-        var endList = new ArrayList<Integer>();
-        for(int l = end; l!= start; l = m[l]){
-            endList.add(l);
-        }
-        endList.add(start);
-        Collections.sort(endList);
+        var endList = Dijkstra(s, m, t, matrix, start, end);
 
         FileWriter writter = new FileWriter(result);
         if(endList.size() != 0){
             writter.append("Y" + "\n");
-            for (int i = 0; i<endList.size();i++){
+            for (int i = 0; i < endList.size() - 1;i++){
                 writter.append(endList.get(i) + 1 + " ");
             }
-            writter.append("\n" + t[t.length-1] + " ");
+            writter.append("\n" + endList.get(endList.size() - 1) + " ");
         }
         else{
             writter.append("N");
         }
         writter.flush();
-
-
     }
 
     public static ArrayList<Integer> getIncidentVertices(int v, int[][] d){
@@ -95,9 +66,8 @@ public class Main {
         return inc;
     }
 
-    public  static Integer argMin(int[] t, HashSet<Integer> s){
+    public  static Integer MinOfT(int[] t, HashSet<Integer> s){
         int aMin = -1;
-
         int max = Integer.MAX_VALUE;
         for(int i = 0; i < t.length; i++){
             if(t[i] < max && s.contains(i) == false){
@@ -106,5 +76,34 @@ public class Main {
             }
         }
         return aMin;
+    }
+
+    public  static ArrayList<Integer> Dijkstra(HashSet<Integer> s, int[] m, int[] t, int[][] matrix, int start, int end){
+        int v = start;
+        s.add(v);
+        t[v] = 1;
+        while (v!= -1){
+            for (int j:getIncidentVertices(v, matrix)) {
+                if(s.contains(j) == false){
+                    var w = t[v] * matrix[v][j];
+                    if( w < t[j]){
+                        t[j] = w;
+                        m[j] = v;
+                    }
+                }
+            }
+            v = MinOfT(t, s);
+            if (v >= 0){
+                s.add(v);
+            }
+        }
+        var endList = new ArrayList<Integer>();
+        for(int l = end; l!= start; l = m[l]){
+            endList.add(l);
+        }
+        endList.add(start);
+        Collections.reverse(endList);
+        endList.add(t[end]);
+        return endList;
     }
 }
