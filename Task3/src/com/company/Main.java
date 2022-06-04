@@ -9,8 +9,8 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        var data = args[0];
-        var result = args[1];
+        var data = "C:\\Users\\User\\Documents\\GitHub\\Task3_Dijkstra\\Task3\\data";
+        var result = "C:\\Users\\User\\Documents\\GitHub\\Task3_Dijkstra\\Task3\\result";
         List<String> lines = new ArrayList();
         try (BufferedReader reader = new BufferedReader(new FileReader(data))) {
             String line;
@@ -43,7 +43,7 @@ public class Main {
         var endList = Dijkstra(s, m, t, matrix, start, end);
 
         FileWriter writter = new FileWriter(result);
-        if(endList.size() != 0){
+        if(endList.size() != 0 && endList.get(endList.size() - 1) < Integer.MAX_VALUE){
             writter.append("Y" + "\n");
             for (int i = 0; i < endList.size() - 1;i++){
                 writter.append(endList.get(i) + 1 + " ");
