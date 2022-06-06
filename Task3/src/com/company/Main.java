@@ -9,8 +9,8 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        var data = "C:\\Users\\User\\Documents\\GitHub\\Task3_Dijkstra\\Task3\\data";
-        var result = "C:\\Users\\User\\Documents\\GitHub\\Task3_Dijkstra\\Task3\\result";
+        var data = args[0];
+        var result = args[1];
         List<String> lines = new ArrayList();
         try (BufferedReader reader = new BufferedReader(new FileReader(data))) {
             String line;
